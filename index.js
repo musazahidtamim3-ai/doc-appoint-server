@@ -496,6 +496,16 @@ async function run() {
                const result = await bookingCollection.find().toArray()
                res.send(result);
           })
+          app.delete('/bookings/:id', async (req, res) => {
+               const {id} = req.params
+               const result = await bookingCollection.deleteOne({ _id: new ObjectId(id) })
+               res.send(result);
+          })
+          app.patch('/bookings/:id', async (req, res) => {
+               const {id} = req.params
+               const result = await bookingCollection.updateOne({ _id: new ObjectId(id) })
+               res.send(result);
+          })
           
 
           await client.db("admin").command({ ping: 1 });
