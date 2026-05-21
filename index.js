@@ -502,8 +502,13 @@ async function run() {
                res.send(result);
           })
           app.patch('/bookings/:id', async (req, res) => {
-               const {id} = req.params
-               const result = await bookingCollection.updateOne({ _id: new ObjectId(id) })
+               const { id } = req.params;
+               const updatedData = req.body;
+               const result = await bookingCollection.updateOne(
+                    { _id: new ObjectId(id) },
+                    { $set: updatedData }
+               );
+
                res.send(result);
           })
           
