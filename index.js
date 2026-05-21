@@ -17,6 +17,13 @@ const client = new MongoClient(uri, {
           deprecationErrors: true,
      }
 });
+const verifyToken = (req, res, next) => {
+     const authHeader = req?.headers.authorization;
+     const token = authHeader.split(" ")[1]
+     console.log(token)
+
+     next()
+}
 async function run() {
      try {
           await client.connect();
@@ -482,7 +489,7 @@ async function run() {
                const doctors = await doctorsCollection.find().toArray()
                res.send(doctors);
           })
-          app.get('/doctors/:id', async (req, res) => {
+          app.get('/doctors/:id', verifyToken, async (req, res) => {
                const { id } = req.params;
                const result = await doctorsCollection.findOne({ id: id })
                res.send(result);
