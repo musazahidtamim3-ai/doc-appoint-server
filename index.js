@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express')
 const app = express()
 const cors = require('cors')
@@ -22,6 +23,7 @@ async function run() {
 
           const db = client.db('doc-appoint')
           const doctorsCollection = db.collection('doctors')
+          const bookingCollection = db.collection('bookings')
 
           const count = await doctorsCollection.countDocuments();
           if (count === 0) {
@@ -480,6 +482,17 @@ async function run() {
                const doctors = await doctorsCollection.find().toArray()
                res.send(doctors);
           })
+          app.get('/doctors/:id', async (req, res) => {
+               const { id } = req.params;
+               const result = await doctorsCollection.findOne({ id: id })
+               res.send(result);
+          })
+          app.post('/bookings', async (req, res) => {
+               const booking = req.body;
+               const result = await bookingCollection.insertOne(booking)
+               res.send(result);
+          })
+          
 
           await client.db("admin").command({ ping: 1 });
           console.log("Pinged your deployment. You successfully connected to MongoDB!");
