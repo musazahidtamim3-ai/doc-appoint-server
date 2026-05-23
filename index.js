@@ -540,7 +540,7 @@ async function run() {
                }
           });
 
-          app.post('/bookings', verifyToken, async (req, res) => {
+          app.post('/bookings', async (req, res) => {
                try {
                     const bookingData = req.body;
                     bookingData.userId = req.user.sub || req.user.email;
@@ -552,6 +552,25 @@ async function run() {
                     res.status(500).json({ message: "Booking failed", error: error.message });
                }
           });
+          app.get('/bookings', async (req, res) => {
+               const result = await bookingCollection.find().toArray()
+               res.send(result);
+          })
+          app.delete('/bookings/:id', async (req, res) => {
+               const { id } = req.params
+               const result = await bookingCollection.deleteOne({ _id: new ObjectId(id) })
+               res.send(result);
+          })
+          app.patch('/bookings/:id', async (req, res) => {
+               const { id } = req.params;
+               const updatedData = req.body;
+               const result = await bookingCollection.updateOne(
+                    { _id: new ObjectId(id) },
+                    { $set: updatedData }
+               );
+
+               res.send(result);
+          })
 
           app.get('/', (req, res) => {
                res.send('Doctor Appointment Server is Running');
